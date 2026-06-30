@@ -19,7 +19,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd pg_isready -U kittygram_user
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -151,6 +151,9 @@ jobs:
             sudo docker compose -f docker-compose.production.yml down -v
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml up -d
+            until sudo docker compose -f docker-compose.production.yml exec -T postgres pg_isready -U kittygram_user; do
+              sleep 5
+            done
             sudo docker compose -f docker-compose.production.yml exec -T backend python manage.py migrate
 
   post_deploy_tests:
