@@ -1,5 +1,3 @@
-version: '3'
-
 volumes:
   pg_data:
   static:
@@ -24,15 +22,12 @@ services:
   frontend:
     image: markvoronkov/kittygram_frontend:latest
     command: >
-      sh -c "cp -r /app/build/static/js /static/ &&
-             cp -r /app/build/static/css /static/ &&
-             cp -r /app/build/static/media /static/ 2>/dev/null || true &&
-             cp /app/build/index.html
-                /app/build/asset-manifest.json
-                /app/build/manifest.json
-                /app/build/robots.txt
-                /app/build/favicon.ico
-                /static/"
+      sh -c "cp -r /app/build/static/. /static/ &&
+             cp /app/build/index.html /static/ &&
+             cp /app/build/asset-manifest.json /static/ &&
+             cp /app/build/manifest.json /static/ &&
+             cp /app/build/robots.txt /static/ &&
+             cp /app/build/favicon.ico /static/"
     volumes:
       - static:/static/
     depends_on:
