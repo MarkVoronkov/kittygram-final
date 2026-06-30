@@ -24,7 +24,9 @@ services:
   frontend:
     image: markvoronkov/kittygram_frontend:latest
     command: >
-      sh -c "cp -r /app/build/static/. /static/ &&
+      sh -c "cp -r /app/build/static/js /static/ &&
+             cp -r /app/build/static/css /static/ &&
+             cp -r /app/build/static/media /static/ 2>/dev/null || true &&
              cp /app/build/index.html
                 /app/build/asset-manifest.json
                 /app/build/manifest.json
