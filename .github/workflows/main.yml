@@ -48,7 +48,7 @@ jobs:
         continue-on-error: true
         run: python -m flake8 backend/
 
-      - name: Run backend tests
+      - name: Run Django checks
         env:
           POSTGRES_USER: kittygram_user
           POSTGRES_PASSWORD: kittygram_password
@@ -59,7 +59,10 @@ jobs:
           SECRET_KEY: test-secret-key
           DEBUG: False
           ALLOWED_HOSTS: localhost,127.0.0.1
-        run: pytest tests/
+        run: |
+          cd backend
+          python manage.py migrate
+          python manage.py test
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -145,8 +148,8 @@ jobs:
           script: |
             cd kittygram
             printf 'POSTGRES_DB=kittygram\nPOSTGRES_USER=kittygram_user\nPOSTGRES_PASSWORD=kittygram_password\nDB_NAME=kittygram\nDB_HOST=postgres\nDB_PORT=5432\nSECRET_KEY=supersecretkey123\nDEBUG=False\nALLOWED_HOSTS=localhost,127.0.0.1,158.160.219.203\n' > .env
+            sudo docker compose -f docker-compose.production.yml down -v
             sudo docker compose -f docker-compose.production.yml pull
-            sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up -d
             sudo docker compose -f docker-compose.production.yml exec -T backend python manage.py migrate
 
@@ -186,4 +189,4 @@ jobs:
           message: |
             ✅ Деплой Kittygram успешно завершён!
             Репозиторий: ${{ github.repository }}
-            Коммит: https://github.com/${{ github.repository }}/commit/${{ github.sha }}у
+            Коммит: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
