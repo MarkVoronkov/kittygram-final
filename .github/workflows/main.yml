@@ -89,7 +89,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_gateway:latest
 
-  deploy:
+   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
     steps:
@@ -111,16 +111,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd kittygram
-            cat > .env << 'EOF'
-POSTGRES_DB=kittygram
-POSTGRES_USER=kittygram_user
-POSTGRES_PASSWORD=kittygram_password
-DB_HOST=postgres
-DB_PORT=5432
-SECRET_KEY=supersecretkey123
-DEBUG=False
-ALLOWED_HOSTS=localhost,127.0.0.1,158.160.219.203
-EOF
+            printf 'POSTGRES_DB=kittygram\nPOSTGRES_USER=kittygram_user\nPOSTGRES_PASSWORD=kittygram_password\nDB_HOST=postgres\nDB_PORT=5432\nSECRET_KEY=supersecretkey123\nDEBUG=False\nALLOWED_HOSTS=localhost,127.0.0.1,158.160.219.203\n' > .env
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up -d
