@@ -24,7 +24,7 @@ services:
   frontend:
     image: markvoronkov/kittygram_frontend:latest
     volumes:
-      - static:/app/result_build/build/
+      - static:/static/
     depends_on:
       - backend
 
